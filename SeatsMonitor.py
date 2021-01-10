@@ -20,7 +20,7 @@ def getCourseInfo(year, session, dep, course, section):
 
         SeatSum = list(page_soap.body.children)[5]
         SeatSum = list(SeatSum.children)[34]
-        SeatSum = list(SeatSum.children)[27]
+        SeatSum = list(SeatSum.children)[28]
 
         total = list(SeatSum)[3]
         registered = list(SeatSum)[5]
@@ -60,9 +60,8 @@ while (notify != 'y' and notify != 'n'):
 
 if notify == 'y':
     prevInfo = [[0,0,0,0]] * len(courses)
-os.system('clear')
+
 while True:
-    move(0,0)
     i = 0
     for course in courses:
         course = course.strip()
@@ -75,5 +74,5 @@ while True:
             compare(course, currInfo, prevInfo[i])
             prevInfo[i] = currInfo
         i += 1
-        print('                                        ')
+        print('--------------------------------------')
         time.sleep(1)
