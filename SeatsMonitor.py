@@ -17,15 +17,12 @@ def getCourseInfo(year, session, dep, course, section):
         page_html = uClient.read()
         uClient.close()
         page_soap = soap(page_html, 'html.parser')
-
-        SeatSum = list(page_soap.body.children)[5]
-        SeatSum = list(SeatSum.children)[34]
-        SeatSum = list(SeatSum.children)[28]
-
-        total = list(SeatSum)[3]
-        registered = list(SeatSum)[5]
-        general = list(SeatSum)[7]
-        restricted = list(SeatSum)[9]
+        
+        SeatSum = page_soap.body.find(class_="'table").find_all('tr')
+        total      = SeatSum[0]
+        registered = SeatSum[1]
+        general    = SeatSum[2]
+        restricted = SeatSum[3]
 
         dateTimeObj = datetime.now()
         print(year + ' ' + session + ' ' + dep + ' ' + course + ' ' + section + '                     ')
