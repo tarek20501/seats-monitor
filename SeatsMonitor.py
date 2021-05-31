@@ -2,11 +2,7 @@ from bs4 import BeautifulSoup as soap
 from urllib.request import urlopen as uReq
 from datetime import datetime
 import time
-import os
 from notify_run import Notify
-
-def move(y, x):
-    print("\033[%d;%dH" % (y, x))
 
 def getCourseInfo(year, session, dep, course, section):
     link  = 'https://courses.students.ubc.ca/cs/courseschedule?sesscd=' + session
@@ -25,12 +21,12 @@ def getCourseInfo(year, session, dep, course, section):
         restricted = SeatSum[3]
 
         dateTimeObj = datetime.now()
-        print(year + ' ' + session + ' ' + dep + ' ' + course + ' ' + section + '                     ')
-        print('    ' + total.td.get_text() + ' ' + total.strong.get_text() + '          ')
-        print('    ' + registered.td.get_text() + ' ' + registered.strong.get_text() + '           ')
-        print('    ' + general.td.get_text() + ' ' + general.strong.get_text() + '        ')
-        print('    ' + restricted.td.get_text() + ' ' + restricted.strong.get_text() + '    ')
-        print('[' + dateTimeObj.strftime('%T') + ']' + '                                ')
+        print(year + ' ' + session + ' ' + dep + ' ' + course + ' ' + section)
+        print('\t' + total.td.get_text() + ' ' + total.strong.get_text())
+        print('\t' + registered.td.get_text() + ' ' + registered.strong.get_text())
+        print('\t' + general.td.get_text() + ' ' + general.strong.get_text())
+        print('\t' + restricted.td.get_text() + ' ' + restricted.strong.get_text())
+        print('[' + dateTimeObj.strftime('%T') + ']')
     except:
         print('Something went wrong in bs4...')
         return [-1]
@@ -47,29 +43,51 @@ def compare(course, curr, prev):
             # message += 'Restricted Seats Remaining*: ' + str(prev[3]) + ' -> ' + str(curr[3]) + '\n'
             notify.send(message)            
 
-courses_file = open('courses.txt', 'r')
-courses = courses_file.readlines()
-courses_file.close()
+courses = list()
 
-notify = ' '
-while (notify != 'y' and notify != 'n'):
-    notify = input('Do you want notifications? (y or n) ')
+def addCourse():
+    # TODO
+    pass
 
-if notify == 'y':
-    prevInfo = [[0,0,0,0]] * len(courses)
+def removeCourse():
+    # TODO
+    pass
 
-while True:
-    i = 0
-    for course in courses:
-        course = course.strip()
-        course = course.split(' ')
-        currInfo = getCourseInfo(course[0], course[1], course[2], course[3], course[4])
-        if currInfo[0] == -1:
+def saveCourses():
+    # TODO
+    pass
+
+def loadCourses():
+    # <YEAR> <W/S> <DEPARTMENT> <COURSE> <SECTION>
+    global courses
+    courses_file = open('courses.txt', 'r')
+    courses = courses_file.readlines()
+    courses = list(map(str.strip, courses))
+    courses_file.close()
+
+def process(period, notify):
+    if notify == 'y':
+        prevInfo = [[0,0,0,0]] * len(courses)
+
+    while True:
+        i = 0
+        for course in courses:
+            print('--------------------------------------')
+            course = course.split(' ')
+            currInfo = getCourseInfo(course[0], course[1], course[2], course[3], course[4])
+            if currInfo[0] == -1:
+                i += 1
+                continue
+            if notify == 'y':
+                compare(course, currInfo, prevInfo[i])
+                prevInfo[i] = currInfo
             i += 1
-            continue
-        if notify == 'y':
-            compare(course, currInfo, prevInfo[i])
-            prevInfo[i] = currInfo
-        i += 1
         print('--------------------------------------')
-        time.sleep(1)
+        time.sleep(period)
+
+if __name__ == "__main__":
+    loadCourses()
+    notify = ' '
+    while (notify != 'y' and notify != 'n'):
+        notify = input('Do you want notifications? (y or n) ')
+    process(1, notify)
