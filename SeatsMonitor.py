@@ -4,6 +4,23 @@ from datetime import datetime
 import time
 from notify_run import Notify
 
+class Seats:
+    def __init__(self):
+        self.totalSeatsRemaining = -1
+        self.currentlyRegistered = -1
+        self.generalSeatsRemaining = -1
+        self.restrictedSeatsRemaining = -1
+
+class Course:
+    def __init__(self, year, session, department, course, section):
+        self.year = year
+        self.session = session
+        self.department = department
+        self.course = course
+        self.section = section
+        self.currentSeats = Seats()
+        self.previousSeats = Seats()
+
 def getCourseInfo(year, session, dep, course, section):
     link  = 'https://courses.students.ubc.ca/cs/courseschedule?sesscd=' + session
     link += '&pname=subjarea&tname=subj-section&sessyr=' + year + '&course=' + course
@@ -63,6 +80,9 @@ def loadCourses():
     courses_file = open('courses.txt', 'r')
     courses = courses_file.readlines()
     courses = list(map(str.strip, courses))
+    # courses = list(map(str.split, courses))
+    # for i in range(len(courses)):
+        # courses[i] = Course(courses[i][0], courses[i][1], courses[i][2], courses[i][3], courses[i][4])
     courses_file.close()
 
 def process(period, notify):
