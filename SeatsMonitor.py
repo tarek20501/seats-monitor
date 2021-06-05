@@ -1,3 +1,4 @@
+#!/usr/bin/python3
 from bs4 import BeautifulSoup as soap
 from urllib.request import urlopen as uReq
 from datetime import datetime
