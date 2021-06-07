@@ -5,6 +5,7 @@ from datetime import datetime
 import time
 from notify_run import Notify
 import copy
+import argparse
 
 notify = Notify()
 courses = list()
@@ -54,9 +55,10 @@ class Course:
             print('\t' + restricted.td.get_text() + ' ' + self.currentSeats.restrictedSeatsRemaining)
             dateTimeObj = datetime.now()
             print('[' + dateTimeObj.strftime('%T') + ']')
+        except KeyboardInterrupt:
+            exit(0)
         except:
             print('Something went wrong in bs4...')
-            return [-1]
 
     def notify(self):
         message = self.department + ' ' + self.course + ': \n'
@@ -65,16 +67,7 @@ class Course:
             notify.send(message)
             print("notification sent!")
 
-def addCourse():
-    # TODO
-    pass
-
-def removeCourse():
-    # TODO
-    pass
-
 def saveCourses():
-    # TODO
     pass
 
 def loadCourses():
@@ -94,14 +87,17 @@ def process(period, isNotify):
         for course in courses:
             print('--------------------------------------')
             course.updateSeats()
-            if isNotify == 'y':
+            if isNotify:
                 course.notify()
         print('--------------------------------------')
         time.sleep(period)
 
 if __name__ == "__main__":
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-n', action='store_true')
+    parser.add_argument('-p', default=1, type=int)
+    args = parser.parse_args()
     loadCourses()
-    isNotify = ' '
-    while (isNotify != 'y' and isNotify != 'n'):
-        isNotify = input('Do you want notifications? (y or n) ')
-    process(1, isNotify)
+    try:        process(args.p, args.n)
+    except KeyboardInterrupt:
+        exit(0)
