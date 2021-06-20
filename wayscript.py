@@ -1,17 +1,8 @@
-#!/usr/bin/python3
 from bs4 import BeautifulSoup as soap
 from urllib.request import urlopen as uReq
-import copy
 
 courses = list()
 message = ""
-
-class Seats:
-    def __init__(self):
-        self.totalSeatsRemaining = '-1'
-        self.currentlyRegistered = '-1'
-        self.generalSeatsRemaining = '-1'
-        self.restrictedSeatsRemaining = '-1'
 
 class Course:
     def __init__(self, year, session, department, course, section):
@@ -20,8 +11,6 @@ class Course:
         self.department = department
         self.course = course
         self.section = section
-        self.currentSeats = Seats()
-        self.previousSeats = Seats()
 
     def updateSeats(self):
         link  = 'https://courses.students.ubc.ca/cs/courseschedule?sesscd=' + self.session
@@ -37,23 +26,16 @@ class Course:
             registered = SeatSum[1]
             general    = SeatSum[2]
             restricted = SeatSum[3]
-
-            self.previousSeats = copy.deepcopy(self.currentSeats)
-            self.currentSeats.totalSeatsRemaining      = total.strong.get_text()
-            self.currentSeats.currentlyRegistered      = registered.strong.get_text()
-            self.currentSeats.generalSeatsRemaining    = general.strong.get_text()
-            self.currentSeats.restrictedSeatsRemaining = restricted.strong.get_text()
             global message
             message += self.year + ' ' + self.session + ' ' + self.department + ' ' + self.course + ' ' + self.section + '\n'
-            #message += '\t' + total.td.get_text()      + ' ' + self.currentSeats.totalSeatsRemaining + '\n'
-            #message += '\t' + registered.td.get_text() + ' ' + self.currentSeats.currentlyRegistered + '\n'
-            message += '\t' + general.td.get_text()    + ' ' + self.currentSeats.generalSeatsRemaining + '\n'
-            #message += '\t' + restricted.td.get_text() + ' ' + self.currentSeats.restrictedSeatsRemaining + '\n'
+            message += '\t' + total.td.get_text()      + ' ' + total.strong.get_text()      + '\n'
+            message += '\t' + registered.td.get_text() + ' ' + registered.strong.get_text() + '\n'
+            message += '\t' + general.td.get_text()    + ' ' + general.strong.get_text()    + '\n'
+            message += '\t' + restricted.td.get_text() + ' ' + restricted.strong.get_text() + '\n'
             message += '\n'
-        except KeyboardInterrupt:
-            exit(0)
-        except:
-            print('Something went wrong in bs4...')
+        except Exception as e:
+            print('Something went wrong in bs4:')
+            print(e)
 
 def loadCourses():
     # <YEAR> <W/S> <DEPARTMENT> <COURSE> <SECTION>
@@ -77,8 +59,8 @@ def notify():
 def process():
     for course in courses:
         course.updateSeats()
-    notify()
 
 if __name__ == "__main__":
     loadCourses()
     process()
+    notify()
