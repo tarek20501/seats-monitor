@@ -67,14 +67,17 @@ def loadCourses():
         courses[i] = Course(courses[i][0], courses[i][1], courses[i][2], courses[i][3], courses[i][4])
     courses_file.close()
 
+def notify():
+    if variables["message"] != message:
+        variables["message"] = message 
+        variables["sms"] = message 
+    else:
+        variables["sms"] = ""
+
 def process():
     for course in courses:
         course.updateSeats()
-    if 󰀂v.48-message󰀂 != message:
-        󰀂v.48-message󰀂 = message 
-        󰀂v.49-sms󰀂 = message 
-    else:
-        󰀂v.49-sms󰀂 = ""
+    notify()
 
 if __name__ == "__main__":
     loadCourses()
