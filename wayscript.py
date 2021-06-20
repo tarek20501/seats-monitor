@@ -26,13 +26,9 @@ class Course:
             registered = SeatSum[1]
             general    = SeatSum[2]
             restricted = SeatSum[3]
+            # .td.get_text():text .strong.get_text():number
             global message
-            message += self.year + ' ' + self.session + ' ' + self.department + ' ' + self.course + ' ' + self.section + '\n'
-            message += '\t' + total.td.get_text()      + ' ' + total.strong.get_text()      + '\n'
-            message += '\t' + registered.td.get_text() + ' ' + registered.strong.get_text() + '\n'
-            message += '\t' + general.td.get_text()    + ' ' + general.strong.get_text()    + '\n'
-            message += '\t' + restricted.td.get_text() + ' ' + restricted.strong.get_text() + '\n'
-            message += '\n'
+            message += self.department + ' ' + self.course + ' ' + self.section + ': ' + general.strong.get_text() + '\n'
         except Exception as e:
             print('Something went wrong in bs4:')
             print(e)
