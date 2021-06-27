@@ -30,8 +30,7 @@ class Course:
             global message
             message += self.department + ' ' + self.course + ' ' + self.section + ': ' + general.strong.get_text() + '\n'
         except Exception as e:
-            print('Something went wrong in bs4:')
-            print(e)
+            variables["sms"] = e
 
 def loadCourses():
     # <YEAR> <W/S> <DEPARTMENT> <COURSE> <SECTION>
